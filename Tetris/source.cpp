@@ -1,17 +1,23 @@
 #include <iostream>
+#include <windows.h>
 
 // there are 7 tetromino pieces
 std::wstring tetromino[7];
 
+// size of the tetris playing field
 int playfield_w = 12;
 int playfield_h = 18;
+
+
+int windows_screen_w = 80;
+int windows_screen_h = 30;
 
 // for storing elements of the field
 unsigned char *playfield = nullptr;
 
 int rotate(int x_coord, int y_coord, int r) {
 	switch (r % 4)
-	{
+	{	// get indices from the array
 		case 0: return y_coord * 4 + x_coord;        // 0 deg rotation
 		case 1: return 12 + y_coord - (x_coord * 4); // 90 deg rotation
 		case 2: return 15 - (y_coord * 4) - x_coord; // 180 deg rotation
@@ -64,5 +70,12 @@ int main() {
 		for (int y = 0; y < playfield_h; y++)
 			playfield[y * playfield_w + x] = (x == 0 || x == playfield_w - 1
 			|| y == playfield_h - 1) ? 8 : 0; // 8 represents border
+
+	wchar_t *screen = new wchar_t[windows_screen_w * windows_screen_h];
+	// fill the screen with empty space
+	for (int i = 0; i < windows_screen_w * windows_screen_h; i++) screen[i] = L' ';
+	HANDLE console = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE | 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
+	SetConsoleActiveScreenBuffer(console);
+
 	return 0;
 }
